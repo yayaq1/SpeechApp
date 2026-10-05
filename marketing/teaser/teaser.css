@@ -1,0 +1,703 @@
+/* Laid out in iOS points: 1 CSS px = 1 pt on a 402 x 874 pt iPhone screen. */
+
+@font-face {
+  font-family: "Instrument Serif";
+  src: url("../../font/InstrumentSerif-Regular.ttf") format("truetype");
+}
+/* SF Pro stand-in. */
+@font-face {
+  font-family: "System";
+  src: url("fonts/Inter-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "System";
+  src: url("fonts/Inter-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+@font-face {
+  font-family: "System";
+  src: url("fonts/Inter-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+}
+/* New York (.system(design: .serif)) stand-in. */
+@font-face {
+  font-family: "System Serif";
+  src: url("fonts/SourceSerif4-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+:root {
+  --label: #ffffff;
+  --secondary: rgba(235, 235, 245, 0.6);
+  --tertiary: rgba(235, 235, 245, 0.3);
+  --accent: #0a84ff;
+  --red: #ff453a;
+  --neutral: #86868b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 720px;
+  height: 1280px;
+  overflow: hidden;
+  background: #000;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+#stage {
+  position: relative;
+  width: 720px;
+  height: 1280px;
+  overflow: hidden;
+  background: #000;
+  color: var(--label);
+  font-family: "System", sans-serif;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 70% at 50% 62%, #0d0d0e 0%, #050505 55%, #000 100%);
+}
+
+.glow {
+  position: absolute;
+  left: 60px;
+  top: 360px;
+  width: 600px;
+  height: 860px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.02) 60%, transparent);
+  filter: blur(30px);
+}
+
+/* Title cards */
+
+.card {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.wordmark {
+  margin: 0;
+  font-family: "Instrument Serif", serif;
+  font-weight: 400;
+  font-size: 132px;
+  line-height: 1;
+  letter-spacing: -3.3px;
+  color: #f5f5f7;
+}
+
+.wordmark.small {
+  font-size: 84px;
+  letter-spacing: -2.1px;
+}
+
+.card-sub {
+  margin: 18px 0 0;
+  font-size: 22px;
+  letter-spacing: -0.2px;
+  color: var(--neutral);
+}
+
+#opener {
+  padding-bottom: 40px;
+}
+
+#endcard {
+  padding-bottom: 30px;
+}
+
+.app-icon {
+  width: 116px;
+  height: 116px;
+  border-radius: 26px;
+  margin-bottom: 30px;
+  box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.2), 0 18px 60px rgba(255, 255, 255, 0.06);
+}
+
+.modes {
+  margin: 34px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.7px;
+  text-transform: uppercase;
+  color: #6e6e73;
+}
+
+/* Headline above the device */
+
+.headline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 146px;
+  text-align: center;
+  z-index: 2;
+}
+
+.headline h2 {
+  margin: 0;
+  font-family: "Instrument Serif", serif;
+  font-weight: 400;
+  font-size: 56px;
+  line-height: 1.05;
+  letter-spacing: -1.1px;
+  color: #f5f5f7;
+}
+
+.headline p {
+  margin: 14px 0 0;
+  font-size: 21px;
+  letter-spacing: -0.2px;
+  color: #98989d;
+}
+
+/* Device */
+
+.device {
+  position: absolute;
+  left: 147px;
+  top: 330px;
+  width: 426px;
+  height: 898px;
+  border-radius: 68px;
+  background: linear-gradient(150deg, #48484c 0%, #232325 18%, #121213 50%, #1e1e20 82%, #3e3e42 100%);
+  box-shadow:
+    inset 0 0 0 0.75px rgba(255, 255, 255, 0.28),
+    inset 0 0 0 2px rgba(0, 0, 0, 0.6),
+    0 0 0 0.5px rgba(0, 0, 0, 0.9),
+    0 40px 90px rgba(0, 0, 0, 0.75);
+  /* Between the caption and the orb bar, so the conversation close-up scales around them. */
+  transform-origin: 213px 712px;
+  z-index: 1;
+}
+
+.side-btn {
+  position: absolute;
+  width: 3px;
+  border-radius: 2px 0 0 2px;
+  background: linear-gradient(90deg, #4a4a4e, #222224);
+}
+
+.side-btn.right {
+  border-radius: 0 2px 2px 0;
+  background: linear-gradient(270deg, #4a4a4e, #222224);
+}
+
+.bezel {
+  position: absolute;
+  inset: 3px;
+  border-radius: 65px;
+  background: #030303;
+}
+
+.screen {
+  position: absolute;
+  inset: 9px;
+  width: 402px;
+  height: 874px;
+  border-radius: 56px;
+  overflow: hidden;
+  isolation: isolate;
+  background: #000;
+}
+
+/* SpeechScreenBackground: systemBackground to secondarySystemBackground at 55%. */
+.screen-bg,
+.layer {
+  position: absolute;
+  inset: 0;
+}
+
+.screen-bg {
+  background: linear-gradient(180deg, #000 0%, #0f0f10 100%);
+}
+
+.layer {
+  background: linear-gradient(180deg, #000 0%, #0f0f10 100%);
+  opacity: 0;
+}
+
+.layer-dim {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+}
+
+.status-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 58px;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.status-bar .clock {
+  position: absolute;
+  left: 0;
+  width: 150px;
+  top: 19px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.status-bar .indicators {
+  position: absolute;
+  right: 30px;
+  top: 21px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  fill: #fff;
+  color: #fff;
+}
+
+.island {
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  width: 125px;
+  height: 37px;
+  margin-left: -62.5px;
+  border-radius: 20px;
+  background: #000;
+  z-index: 21;
+}
+
+.home-indicator {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  width: 139px;
+  height: 5px;
+  margin-left: -69.5px;
+  border-radius: 3px;
+  background: #fff;
+  z-index: 21;
+}
+
+/* Liquid Glass, dark appearance */
+
+.glass {
+  position: relative;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.07));
+  box-shadow:
+    inset 0 0.75px 0 rgba(255, 255, 255, 0.32),
+    inset 0 -0.5px 0 rgba(255, 255, 255, 0.1),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.12),
+    0 8px 22px rgba(0, 0, 0, 0.45);
+}
+
+.glass.tint-blue {
+  background: linear-gradient(180deg, #2b95ff, #0a7cf2);
+  box-shadow:
+    inset 0 0.75px 0 rgba(255, 255, 255, 0.45),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.18),
+    0 8px 22px rgba(10, 132, 255, 0.18);
+}
+
+.glass.tint-red {
+  background: linear-gradient(180deg, #ff5a50, #f23b31);
+  box-shadow:
+    inset 0 0.75px 0 rgba(255, 255, 255, 0.45),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.18),
+    0 8px 22px rgba(255, 69, 58, 0.16);
+}
+
+svg {
+  display: block;
+}
+
+svg path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.status-bar svg path {
+  stroke: none;
+  fill: #fff;
+}
+
+svg.fill rect {
+  fill: currentColor;
+}
+
+/* Navigation bar */
+
+.nav {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 58px;
+  height: 52px;
+}
+
+.back {
+  position: absolute;
+  left: 16px;
+  top: 4px;
+  width: 44px;
+  height: 44px;
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.back svg {
+  width: 22px;
+  height: 22px;
+}
+
+.back svg path {
+  stroke-width: 2.4;
+}
+
+.inline-title {
+  position: absolute;
+  left: 80px;
+  right: 80px;
+  top: 6px;
+  text-align: center;
+}
+
+.inline-title .t {
+  font-family: "Instrument Serif", serif;
+  font-size: 21px;
+  letter-spacing: -0.21px;
+  line-height: 25px;
+}
+
+.inline-title .s {
+  font-size: 12px;
+  line-height: 15px;
+  color: var(--secondary);
+}
+
+/* Home */
+
+.large-title {
+  position: absolute;
+  left: 16px;
+  top: 104px;
+  font-family: "Instrument Serif", serif;
+  font-size: 51px;
+  line-height: 56px;
+  letter-spacing: -1.28px;
+}
+
+.rows {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 178px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  height: 55px;
+  padding: 0 20px;
+  border-radius: 28px;
+  display: flex;
+  align-items: center;
+  font-size: 17px;
+  letter-spacing: -0.25px;
+  overflow: hidden;
+}
+
+.flare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(60% 140% at 30% 50%, rgba(255, 255, 255, 0.28), transparent 70%);
+  opacity: 0;
+}
+
+/* Reading */
+
+/* Passage scrolls under the orb bar; .scrollEdgeEffectStyle(.soft) softens it at the edge. */
+.reading-body {
+  position: absolute;
+  left: 32px;
+  right: 32px;
+  top: 128px;
+  bottom: 190px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, #000 0, #000 calc(100% - 110px), transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0, #000 calc(100% - 110px), transparent 100%);
+}
+
+.passage-title {
+  font-family: "Instrument Serif", serif;
+  font-size: 38px;
+  line-height: 42.6px;
+  letter-spacing: -0.76px;
+}
+
+.passage-meta {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--secondary);
+}
+
+.passage-words {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 8px;
+  row-gap: 11px;
+  font-family: "System Serif", serif;
+  font-size: 22px;
+  line-height: 27px;
+}
+
+.passage-words span {
+  text-decoration-line: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1.2px;
+  text-underline-offset: 4px;
+}
+
+.passage-words span.current {
+  text-decoration-color: #fff;
+}
+
+/* Session chrome: caption + orb bar */
+
+.bottom-chrome {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.orb-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+}
+
+/* VoiceOrb.controlSpacing: 28pt gap to the drawn sphere, which is 55% of the 150pt box. */
+.orb {
+  width: 150px;
+  height: 150px;
+  margin: 0 -5.75px;
+  border: 0;
+  background: transparent;
+  overflow: hidden;
+}
+
+.circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.circle svg {
+  width: 22px;
+  height: 22px;
+}
+
+.circle svg path {
+  stroke-width: 2.6;
+}
+
+.subtitle {
+  width: 100%;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  font-family: "System Serif", serif;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.subtitle span {
+  display: inline-block;
+}
+
+/* Monologue */
+
+.plan-body {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 136px;
+}
+
+.stage-duration {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.stage-duration .num {
+  font-family: "Instrument Serif", serif;
+  font-size: 48px;
+  line-height: 52px;
+  letter-spacing: -1.2px;
+}
+
+.stage-duration .unit {
+  font-family: "Instrument Serif", serif;
+  font-size: 28px;
+  letter-spacing: -0.42px;
+  color: var(--secondary);
+}
+
+.topic {
+  margin-top: 14px;
+  font-family: "System Serif", serif;
+  font-size: 22px;
+  line-height: 34px;
+}
+
+.change-topic {
+  margin-top: 14px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--secondary);
+}
+
+.add-note {
+  margin-top: 36px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--secondary);
+}
+
+.add-note svg {
+  width: 15px;
+  height: 15px;
+}
+
+.add-note svg path {
+  stroke-width: 2.6;
+}
+
+.plan-chrome {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 50px;
+}
+
+.start-pill {
+  margin: 0 12px;
+  height: 61px;
+  border-radius: 31px;
+  background: #fff;
+  color: #000;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.live-topic {
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  top: 118px;
+  text-align: center;
+  font-family: "System Serif", serif;
+  font-size: 15px;
+  line-height: 20px;
+  color: var(--secondary);
+}
+
+.take-clock {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 326px;
+  height: 92px;
+  display: flex;
+  justify-content: center;
+  font-size: 76px;
+  line-height: 92px;
+  font-weight: 600;
+  letter-spacing: -1.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.take-clock .ch {
+  position: relative;
+  display: inline-block;
+  height: 92px;
+  overflow: visible;
+}
+
+.take-clock .ch > span {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.take-clock .ch .sizer {
+  position: static;
+  visibility: hidden;
+}
+
+/* Reading start-gate fog: 7pt blur, 18% black wash */
+.fog {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(7px);
+  opacity: 0;
+}
+
+.fade {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+}

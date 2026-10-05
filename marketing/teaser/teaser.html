@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=720, initial-scale=1">
+  <title>Orator teaser</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="teaser.css">
+</head>
+<body>
+  <div id="stage">
+    <div class="backdrop"></div>
+    <div class="glow" id="glow"></div>
+
+    <section class="card" id="opener">
+      <h1 class="wordmark">Orator</h1>
+      <p class="card-sub">Speech practice</p>
+    </section>
+
+    <section class="headline" id="h-home">
+      <h2>Three ways to practice.</h2>
+      <p>Speaking out loud, at your own pace.</p>
+    </section>
+    <section class="headline" id="h-reading">
+      <h2>Read a passage.</h2>
+      <p>It follows along, word by word.</p>
+    </section>
+    <section class="headline" id="h-mono">
+      <h2>Talk about something.</h2>
+      <p>One topic. A few minutes. Your own words.</p>
+    </section>
+    <section class="headline" id="h-convo">
+      <h2>Start a conversation.</h2>
+      <p>A voice partner that listens and talks back.</p>
+    </section>
+
+    <div class="device" id="device">
+      <span class="side-btn" style="left:-2.5px; top:150px; height:30px"></span>
+      <span class="side-btn" style="left:-2.5px; top:205px; height:56px"></span>
+      <span class="side-btn" style="left:-2.5px; top:272px; height:56px"></span>
+      <span class="side-btn right" style="right:-2.5px; top:232px; height:90px"></span>
+      <div class="bezel">
+        <div class="screen" id="screen">
+          <div class="screen-bg"></div>
+
+          <!-- HomeView: large title + three glass capsule rows -->
+          <div class="layer" id="home">
+            <div class="large-title">Orator</div>
+            <div class="rows">
+              <div class="row glass" id="row-read"><span>Read a passage</span><i class="flare"></i></div>
+              <div class="row glass"><span>Start a conversation</span></div>
+              <div class="row glass"><span>Talk about something</span></div>
+            </div>
+            <div class="layer-dim" id="home-dim"></div>
+          </div>
+
+          <!-- ReadingSessionView: h2 title, duration, follow-along words, orb bar -->
+          <div class="layer" id="reading">
+            <div class="nav"><div class="back glass"><svg viewBox="0 0 24 24"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></div></div>
+            <div class="reading-body">
+              <div class="passage-title">Harbor Morning</div>
+              <div class="passage-meta">~1 min</div>
+              <div class="passage-words" id="passage-words"></div>
+            </div>
+            <div class="bottom-chrome">
+              <div class="orb-bar">
+                <div class="circle glass"><svg viewBox="0 0 24 24" class="fill"><rect x="6.2" y="4.8" width="3.9" height="14.4" rx="1.2"/><rect x="13.9" y="4.8" width="3.9" height="14.4" rx="1.2"/></svg></div>
+                <iframe class="orb" data-orb="reading" src="../../ios/App/Orb/voice-orb.html" scrolling="no"></iframe>
+                <div class="circle glass tint-blue"><svg viewBox="0 0 24 24"><path d="M5.5 12.6 10 17l8.5-10"/></svg></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MonologueSessionView, planning: stage duration, topic, notes, I'm ready -->
+          <div class="layer" id="mono-plan">
+            <div class="nav"><div class="back glass"><svg viewBox="0 0 24 24"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></div></div>
+            <div class="plan-body" id="plan-body">
+              <div class="stage-duration"><span class="num">4</span><span class="unit">minutes</span></div>
+              <div class="topic">Talk about how you get ready on a busy morning—what you always do, what you skip, and what usually goes wrong.</div>
+              <div class="change-topic">Change topic</div>
+              <div class="add-note"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add note</div>
+            </div>
+            <div class="plan-chrome" id="plan-chrome">
+              <div class="start-pill" id="ready-pill">I’m ready</div>
+            </div>
+          </div>
+
+          <!-- MonologueSessionView, taking: topic, take clock, caption, orb bar -->
+          <div class="layer" id="mono-live">
+            <div class="nav"><div class="back glass"><svg viewBox="0 0 24 24"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></div></div>
+            <div class="live-topic">Talk about how you get ready on a busy morning—what you always do, what you skip, and what usually goes wrong.</div>
+            <div class="take-clock" id="take-clock"></div>
+            <div class="bottom-chrome">
+              <div class="subtitle" id="mono-subtitle"></div>
+              <div class="orb-bar">
+                <div class="circle glass"><svg viewBox="0 0 24 24" class="fill"><rect x="6.2" y="4.8" width="3.9" height="14.4" rx="1.2"/><rect x="13.9" y="4.8" width="3.9" height="14.4" rx="1.2"/></svg></div>
+                <iframe class="orb" data-orb="mono" src="../../ios/App/Orb/voice-orb.html" scrolling="no"></iframe>
+                <div class="circle glass tint-blue"><svg viewBox="0 0 24 24"><path d="M5.5 12.6 10 17l8.5-10"/></svg></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ConversationSessionView: inline title + budget subtitle, caption, orb bar with stop -->
+          <div class="layer" id="convo">
+            <div class="nav">
+              <div class="back glass"><svg viewBox="0 0 24 24"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></div>
+              <div class="inline-title"><div class="t">Conversation</div><div class="s">3 of 20 used this month</div></div>
+            </div>
+            <div class="bottom-chrome">
+              <div class="subtitle" id="convo-subtitle"></div>
+              <div class="orb-bar">
+                <div class="circle glass"><svg viewBox="0 0 24 24" class="fill"><rect x="6.2" y="4.8" width="3.9" height="14.4" rx="1.2"/><rect x="13.9" y="4.8" width="3.9" height="14.4" rx="1.2"/></svg></div>
+                <iframe class="orb" data-orb="convo" src="../../ios/App/Orb/voice-orb.html" scrolling="no"></iframe>
+                <div class="circle glass tint-red"><svg viewBox="0 0 24 24" class="fill"><rect x="6" y="6" width="12" height="12" rx="2.4"/></svg></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fog" id="fog"></div>
+
+          <div class="status-bar">
+            <span class="clock">9:41</span>
+            <span class="indicators">
+              <svg viewBox="0 0 18 12" width="18" height="12"><rect x="0" y="8" width="3" height="4" rx="0.8"/><rect x="5" y="5.5" width="3" height="6.5" rx="0.8"/><rect x="10" y="3" width="3" height="9" rx="0.8"/><rect x="15" y="0" width="3" height="12" rx="0.8"/></svg>
+              <svg viewBox="0 0 17 12" width="17" height="12"><path d="M8.5 2.2c2.5 0 4.8 1 6.5 2.6l1.1-1.2C14.1 1.7 11.4.5 8.5.5S2.9 1.7.9 3.6L2 4.8c1.7-1.6 4-2.6 6.5-2.6Zm0 3.4c1.6 0 3 .6 4.1 1.6l1.1-1.2C12.3 4.8 10.5 4 8.5 4S4.7 4.8 3.3 6l1.1 1.2c1.1-1 2.5-1.6 4.1-1.6Zm0 3.3c.7 0 1.3.3 1.8.7L8.5 11.6 6.7 9.6c.5-.4 1.1-.7 1.8-.7Z"/></svg>
+              <svg viewBox="0 0 27 13" width="27" height="13"><rect x="0.5" y="0.5" width="23" height="12" rx="3.8" fill="none" stroke="currentColor" stroke-opacity="0.4"/><rect x="2" y="2" width="20" height="9" rx="2.5"/><path d="M25 4.5v4c.8-.3 1.4-1.1 1.4-2s-.6-1.7-1.4-2Z" fill-opacity="0.4"/></svg>
+            </span>
+          </div>
+          <div class="island"></div>
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="card" id="endcard">
+      <img class="app-icon" src="../../ios/App/Assets.xcassets/AppIcon.appiconset/AppIcon.png" alt="">
+      <h1 class="wordmark small">Orator</h1>
+      <p class="card-sub">Speech practice for iPhone</p>
+      <p class="modes">Reading · Topic talk · Conversation</p>
+    </section>
+
+    <div class="fade" id="fade"></div>
+  </div>
+  <script src="teaser.js"></script>
+</body>
+</html>
