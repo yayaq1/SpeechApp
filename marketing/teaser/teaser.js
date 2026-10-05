@@ -2,36 +2,41 @@
 // rendered in any order. The only stateful pieces are the orb iframes, which run on the
 // virtual clock in virtual-time.js and are stepped forward one frame at a time.
 (() => {
-  const DURATION = 19.4;
+  const DURATION = 19.6;
 
   // Seconds.
   const T = {
-    openerIn: 0.2,
-    openerOut: 2.2,
-    deviceIn: 2.35,
-    homeHead: [2.75, 4.95],
-    tapRead: 4.35,
-    push: 4.6,
-    readHead: [5.0, 8.7],
-    caretStart: 5.45,
-    toMono: 8.7,
-    monoHead: [8.95, 12.6],
-    tapReady: 9.95,
-    fog: 10.02,
-    live: 10.32,
-    monoTalk: 10.75,
-    toConvo: 12.6,
-    convoHead: [12.85, 16.05],
-    convoTalk: 13.05,
-    userTurn: 15.45,
-    deviceOut: 16.05,
-    endIn: 16.55,
-    fadeOut: 18.9,
+    openerIn: 0.15,
+    openerOut: 1.85,
+    deviceIn: 1.95,
+    homeHead: [2.3, 4.35],
+    tapRead: 3.75,
+    push: 4.0,
+    readHead: [4.4, 7.95],
+    caretStart: 4.75,
+    toMono: 7.95,
+    monoHead: [8.2, 11.6],
+    tapReady: 9.1,
+    fog: 9.17,
+    live: 9.47,
+    monoTalk: 9.7,
+    toConvo: 11.6,
+    convoHead: [12.5, 16.85],
+    zoom: 11.8,
+    convoTalk: 12.6,
+    userTurn: 15.75,
+    deviceOut: 16.45,
+    endIn: 16.95,
+    fadeOut: 19.1,
   };
+
+  // Conversation close-up: the caption and orb bar fill the frame, the bezel leaves it.
+  // focusY is the stage y of the device's transform-origin at rest (330 + 712, see teaser.css).
+  const ZOOM = { scale: 1.85, focusY: 1042, targetY: 930 };
 
   const PASSAGE =
     'This morning the ship sits quiet in the harbor while sheep graze on the green hill above the shore. A child points at the sheep then at the ship and laughs because the two words sound almost the same in her mind. The guide asks her to say ship when she means the boat and sheep when she means the animals. Clear speech matters here because a wrong vowel can send a listener looking at the wrong thing.';
-  const MONO_TRANSCRIPT = 'Most mornings start with coffee, and then the hunt for my keys.';
+  const MONO_TRANSCRIPT = 'Most mornings start with coffee.';
   const CONVO_OPEN = 'Paper book or phone screen when you travel — why?';
 
   const SUBTITLE_WIDTH = 354;
@@ -214,9 +219,9 @@
   }
 
   const monoWords = MONO_TRANSCRIPT.split(' ');
-  const monoTimes = speechTimes(monoWords, T.monoTalk, 1.1);
+  const monoTimes = speechTimes(monoWords, T.monoTalk, 1.2);
   const convoWords = CONVO_OPEN.split(' ');
-  const convoTimes = speechTimes(convoWords, T.convoTalk, 0.95);
+  const convoTimes = speechTimes(convoWords, T.convoTalk, 1.3);
   let monoSchedule;
   let convoSchedule;
 
@@ -242,11 +247,11 @@
           parts.push(`<span class="ch"><span class="sizer">${c}</span><span>${c}</span></span>`);
         } else {
           const inY = (-(1 - a) * 0.32).toFixed(3);
-          const outY = (a * 0.32).toFixed(3);
+          const outY = (a * 0.45).toFixed(3);
           parts.push(
             `<span class="ch"><span class="sizer">${c}</span>` +
               `<span style="transform:translateY(${inY}em);opacity:${a.toFixed(3)};filter:blur(${((1 - a) * 5).toFixed(2)}px)">${c}</span>` +
-              `<span style="transform:translateY(${outY}em);opacity:${Math.pow(1 - a, 2).toFixed(3)};filter:blur(${(a * 5).toFixed(2)}px)">${p}</span></span>`,
+              `<span style="transform:translateY(${outY}em);opacity:${Math.pow(1 - a, 3).toFixed(3)};filter:blur(${(a * 5).toFixed(2)}px)">${p}</span></span>`,
           );
         }
       }
@@ -309,18 +314,19 @@
       style(sub, { opacity: s, y: 8 * (1 - s), blur: 6 * (1 - s) });
     }
 
-    // Device in, slow drift, out
+    // Device in, slow drift, conversation close-up, out
     {
       const a = outQuint(prog(t, T.deviceIn, 1.25));
-      const b = inOutCubic(prog(t, T.deviceOut, 0.8));
-      const drift = 1 + 0.022 * inOutCubic(prog(t, T.deviceIn + 1, T.deviceOut - T.deviceIn - 1));
+      const b = inOutCubic(prog(t, T.deviceOut, 1.0));
+      const z = inOutCubic(prog(t, T.zoom, 1.0));
+      const drift = 1 + 0.02 * inOutCubic(prog(t, T.deviceIn + 1, T.zoom - T.deviceIn - 1));
       style(el.device, {
         opacity: a * (1 - b),
-        y: 90 * (1 - a) + 70 * b,
-        scale: lerp(0.93, 1, a) * drift * lerp(1, 0.95, b),
+        y: 90 * (1 - a) + (ZOOM.targetY - ZOOM.focusY) * z + 80 * b,
+        scale: lerp(0.93, 1, a) * drift * lerp(1, ZOOM.scale, z) * lerp(1, 0.96, b),
         blur: 5 * b,
       });
-      style(el.glow, { opacity: a * (1 - b) });
+      style(el.glow, { opacity: a * (1 - b) * (1 - z) });
     }
 
     headline(el.heads.home, t, T.homeHead);
@@ -339,18 +345,27 @@
     }
 
     // Reading
+    // Reading to Monologue is a blur dissolve: two text-heavy pages read badly as a plain crossfade.
+    const dissolve = inOutCubic(prog(t, T.toMono + 0.1, 0.45));
     {
-      const shown = t >= T.push && t < T.toMono + 0.5;
-      style(el.reading, { opacity: shown ? 1 : 0, x: 402 * (1 - push) });
+      const shown = t >= T.push && t < T.toMono + 0.55;
+      style(el.reading, {
+        opacity: shown ? 1 : 0,
+        x: 402 * (1 - push),
+        blur: 10 * outCubic(prog(t, T.toMono, 0.3)),
+      });
       const index = currentWord(t);
       wordSpans.forEach((span, i) => span.classList.toggle('current', i === index));
     }
 
     // Monologue: planning, I'm ready, fog, live take
     {
-      const cross = inOutCubic(prog(t, T.toMono, 0.5));
       const planShown = t >= T.toMono && t < T.live;
-      style(el.monoPlan, { opacity: planShown ? cross : 0, scale: lerp(1.015, 1, cross) });
+      style(el.monoPlan, {
+        opacity: planShown ? dissolve : 0,
+        scale: lerp(1.015, 1, dissolve),
+        blur: 10 * (1 - dissolve),
+      });
       const press = spring(t - T.tapReady, 0.22) * (1 - spring(t - (T.tapReady + 0.18), 0.3));
       style(el.readyPill, { scale: 1 - 0.03 * press, opacity: 1 - 0.08 * press });
 
@@ -398,7 +413,8 @@
     // React inside each orb commits the new signal on a scheduler task before the next frame draws.
     await macrotask();
     await macrotask();
-    for (const orb of orbs) orb.win.__vt.advanceTo(t * 1000);
+    // Without render.mjs there is no virtual clock and the orbs run in real time.
+    for (const orb of orbs) orb.win.__vt?.advanceTo(t * 1000);
     window.__vt?.advanceTo(t * 1000);
   }
 
@@ -417,7 +433,7 @@
 
     const frames = [...document.querySelectorAll('iframe.orb')];
     for (const frame of frames) {
-      await waitFor(() => frame.contentWindow?.orbReady === true && frame.contentWindow.__vt, `orb ${frame.dataset.orb}`);
+      await waitFor(() => frame.contentWindow?.orbReady === true, `orb ${frame.dataset.orb}`);
       const win = frame.contentWindow;
       win.orbSetParked(false);
       orbs.push({ name: frame.dataset.orb, win });

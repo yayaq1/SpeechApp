@@ -4,6 +4,7 @@
 //   node render.mjs --fps 30              lighter render
 //   node render.mjs --still 3.5,6,10.8    PNG stills at those times (seconds)
 //   node render.mjs --out /some/dir       output folder (default ./out)
+//   node render.mjs --remux               rebuild the ambient track on the existing silent MP4
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import http from 'node:http';
@@ -88,26 +89,53 @@ function ambientFilter(duration) {
   const voice = (f, a, lfo, phase) =>
     `${a}*(sin(2*PI*${f}*t)+sin(2*PI*${(f * 1.0027).toFixed(3)}*t))*(0.72+0.28*sin(2*PI*${lfo}*t+${phase}))`;
   const expr = [
-    voice(73.42, 0.5, 0.07, 0),
-    voice(146.83, 0.42, 0.09, 1.1),
-    voice(220.0, 0.3, 0.12, 2.3),
+    voice(146.83, 0.5, 0.07, 0),
+    voice(220.0, 0.38, 0.09, 1.1),
+    voice(293.66, 0.3, 0.12, 2.3),
     voice(329.63, 0.16, 0.1, 0.4),
-    voice(440.0, 0.07, 0.13, 1.9),
+    voice(440.0, 0.08, 0.13, 1.9),
   ].join('+');
   const fadeOut = Math.max(0, duration - 2.6).toFixed(2);
   return [
     `aevalsrc='0.06*(${expr})':s=48000:d=${duration.toFixed(3)}`,
-    'lowpass=f=900',
+    'lowpass=f=1800',
     'aecho=0.8:0.6:180|370:0.28|0.16',
     'aformat=channel_layouts=stereo',
     'afade=t=in:st=0:d=2.2',
     `afade=t=out:st=${fadeOut}:d=2.6`,
-    'volume=0.7',
+    'volume=3.2',
   ].join(',');
+}
+
+async function muxAmbient(silent, ambient, duration) {
+  await run('ffmpeg', [
+    '-y', '-loglevel', 'error',
+    '-i', silent,
+    '-f', 'lavfi', '-i', ambientFilter(duration),
+    '-map', '0:v', '-map', '1:a',
+    '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-shortest',
+    '-movflags', '+faststart',
+    ambient,
+  ]).done;
 }
 
 async function main() {
   fs.mkdirSync(outDir, { recursive: true });
+  const silent = path.join(outDir, 'orator-teaser-9x16-silent.mp4');
+  const ambient = path.join(outDir, 'orator-teaser-9x16.mp4');
+
+  if (args.remux) {
+    const probe = spawn('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', silent]);
+    let out = '';
+    probe.stdout.on('data', (chunk) => {
+      out += chunk;
+    });
+    await new Promise((resolve) => probe.on('close', resolve));
+    await muxAmbient(silent, ambient, Number(out));
+    console.log(ambient);
+    return;
+  }
+
   const server = await serve(repoRoot);
   const { port } = server.address();
   const browser = await puppeteer.launch({
@@ -135,6 +163,11 @@ async function main() {
     });
     await page.setViewport(VIEWPORT);
     await page.evaluateOnNewDocument(fs.readFileSync(path.join(here, 'virtual-time.js'), 'utf8'));
+    // The orb sizes its canvas from devicePixelRatio (capped at 2). Ask for the cap so it
+    // stays sharp in the conversation close-up.
+    await page.evaluateOnNewDocument(() => {
+      if (window.top !== window) Object.defineProperty(window, 'devicePixelRatio', { get: () => 2 });
+    });
     await page.goto(`http://127.0.0.1:${port}/marketing/teaser/teaser.html`, { waitUntil: 'load' });
     await page.evaluate(() => window.teaser.ready());
     const duration = await page.evaluate(() => window.teaser.duration);
@@ -161,8 +194,6 @@ async function main() {
       return;
     }
 
-    const silent = path.join(outDir, 'orator-teaser-9x16-silent.mp4');
-    const ambient = path.join(outDir, 'orator-teaser-9x16.mp4');
     const encoder = run('ffmpeg', [
       '-y', '-loglevel', 'error',
       '-f', 'image2pipe', '-framerate', String(fps), '-c:v', 'png', '-i', '-',
@@ -185,15 +216,7 @@ async function main() {
     encoder.child.stdin.end();
     await encoder.done;
 
-    await run('ffmpeg', [
-      '-y', '-loglevel', 'error',
-      '-i', silent,
-      '-f', 'lavfi', '-i', ambientFilter(duration),
-      '-map', '0:v', '-map', '1:a',
-      '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-shortest',
-      '-movflags', '+faststart',
-      ambient,
-    ]).done;
+    await muxAmbient(silent, ambient, duration);
     console.log(ambient);
     console.log(silent);
   } finally {
