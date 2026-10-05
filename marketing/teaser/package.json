@@ -1,0 +1,12 @@
+{
+  "name": "orator-teaser",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "fonts": "bash fetch-fonts.sh",
+    "render": "node render.mjs"
+  },
+  "dependencies": {
+    "puppeteer-core": "^24.0.0"
+  }
+}
